@@ -1,4 +1,6 @@
 import random
+import mysql.connector
+
 pc = random.choice(["Stein","Schere","Papier","Echse","Spock"])
 stats = {"Stein": 0, "Papier": 0, "Schere": 0, "Echse": 0, "Spock": 0}
 menschanalyse = {"Stein": 0, "Papier": 0, "Schere": 0, "Echse": 0, "Spock": 0}
@@ -48,5 +50,25 @@ def game():
 
 
 
+
+def databaseshit():
+
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="statistikaustria"
+    )
+    mycurs = db.cursor()
+
+    columns = ', '.join("`" + str(x).replace('/', '_') + "`" for x in win.keys())
+    values = ', '.join("'" + str(x).replace('/', '_') + "'" for x in win.values())
+    sql = "INSERT INTO %s ( %s ) VALUES ( %s );" % ('testwin', columns, values)
+    mycurs.execute(sql)
+    db.commit()
+    print(sql)
+
+
 if __name__ == "__main__":
     game()
+    databaseshit()
