@@ -1,5 +1,14 @@
 import random
 import mysql.connector
+from flask import Flask
+import json
+
+db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="statistikaustria"
+    )
 
 pc = random.choice(["Stein","Schere","Papier","Echse","Spock"])
 stats = {"Stein": 0, "Papier": 0, "Schere": 0, "Echse": 0, "Spock": 0}
@@ -49,18 +58,9 @@ def game():
         print("Gesamtstats: " + str(stats), "Win/Loss/Draw: " + str(win), "Menschanalyse: " + str(menschanalyse))
 
 
-
-
 def databaseshit():
 
-    db = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="statistikaustria"
-    )
     mycurs = db.cursor()
-
     columns = ', '.join("`" + str(x).replace('/', '_') + "`" for x in win.keys())
     values = ', '.join("'" + str(x).replace('/', '_') + "'" for x in win.values())
     sql = "INSERT INTO %s ( %s ) VALUES ( %s );" % ('testwin', columns, values)
@@ -68,7 +68,21 @@ def databaseshit():
     db.commit()
     print(sql)
 
+def getdata():
+
+    mycurs = db.cursor()
+    mycurs.execute("SELECT * FROM testwin")
+    result = mycurs.fetchall()
+    return result
+
+
+app = Flask(__name__)
+@app.route('/')
+def home():
+    return getdata()
+
 
 if __name__ == "__main__":
     game()
     databaseshit()
+    app.run()
