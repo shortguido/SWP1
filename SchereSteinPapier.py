@@ -59,7 +59,6 @@ def game():
 
 
 def databaseshit():
-
     mycurs = db.cursor()
     columns = ', '.join("`" + str(x).replace('/', '_') + "`" for x in win.keys())
     values = ', '.join("'" + str(x).replace('/', '_') + "'" for x in win.values())
@@ -68,12 +67,14 @@ def databaseshit():
     db.commit()
     print(sql)
 
-def getdata():
 
+def getdata():
     mycurs = db.cursor()
     mycurs.execute("SELECT * FROM testwin")
     result = mycurs.fetchall()
-    return result
+    field_names = [i[0] for i in mycurs.description]
+    return field_names + result
+
 
 
 app = Flask(__name__)
