@@ -73,8 +73,14 @@ def getdata():
     mycurs.execute("SELECT * FROM testwin")
     result = mycurs.fetchall()
     field_names = [i[0] for i in mycurs.description]
-    return field_names + result
 
+    mycurs.execute(f'SELECT {gew} FROM testwin where name = "Mensch"')
+    selectionplayer = [int(record[0]) for record in mycurs.fetchall()]
+    selectionplayer = selectionplayer[0]
+    mycurs.execute(f'SELECT {gewcom} FROM testwin where name = "PC"')
+    selectioncomp = [int(record[0]) for record in mycurs.fetchall()]
+    selectioncomp = selectioncomp[0]
+    return field_names + result + selectioncomp + selectionplayer
 
 
 app = Flask(__name__)
