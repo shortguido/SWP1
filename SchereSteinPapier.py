@@ -1,19 +1,12 @@
 import random
-import mysql.connector
-from flask import Flask
-import json
 
-db = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="statistikaustria"
-    )
+from ServerforSSP import databaseshit, cleardb
 
-pc = random.choice(["Stein","Schere","Papier","Echse","Spock"])
+available = ["Stein","Schere","Papier","Echse","Spock"]
 stats = {"Stein": 0, "Papier": 0, "Schere": 0, "Echse": 0, "Spock": 0}
 menschanalyse = {"Stein": 0, "Papier": 0, "Schere": 0, "Echse": 0, "Spock": 0}
 win = {"PC": 0, "Mensch": 0, "U": 0}
+eingabe = None
 
 def destroy(e):
     if e == "Schere":
@@ -29,6 +22,7 @@ def destroy(e):
 
 def game():
     eingabe = str(input("Schere, Stein, Papier, Echse oder Spock? "))
+    pc = random.choice(available)
     if pc in destroy(eingabe):
         print("PC hat gewählt: " + pc)
         print("Du hast gewonnen!")
@@ -51,45 +45,31 @@ def game():
         stats[pc] += 1
         menschanalyse[eingabe] += 1
 
+
     jn = str(input("Weiterspielen? [j/n]: "))
     if jn == "j":
         game()
     else:
-        print("Gesamtstats: " + str(stats), "Win/Loss/Draw: " + str(win), "Menschanalyse: " + str(menschanalyse))
+        menu()
 
 
-def databaseshit():
-    mycurs = db.cursor()
-    columns = ', '.join("`" + str(x).replace('/', '_') + "`" for x in win.keys())
-    values = ', '.join("'" + str(x).replace('/', '_') + "'" for x in win.values())
-    sql = "INSERT INTO %s ( %s ) VALUES ( %s );" % ('testwin', columns, values)
-    mycurs.execute(sql)
-    db.commit()
-    print(sql)
-
-
-def getdata():
-    mycurs = db.cursor()
-    mycurs.execute("SELECT * FROM testwin")
-    result = mycurs.fetchall()
-    field_names = [i[0] for i in mycurs.description]
-
-    mycurs.execute(f'SELECT {gew} FROM testwin where name = "Mensch"')
-    selectionplayer = [int(record[0]) for record in mycurs.fetchall()]
-    selectionplayer = selectionplayer[0]
-    mycurs.execute(f'SELECT {gewcom} FROM testwin where name = "PC"')
-    selectioncomp = [int(record[0]) for record in mycurs.fetchall()]
-    selectioncomp = selectioncomp[0]
-    return field_names + result + selectioncomp + selectionplayer
-
-
-app = Flask(__name__)
-@app.route('/')
-def home():
-    return getdata()
+def menu():
+    exit = False
+    print()
+    print("Menu:")
+    databaseshit(win)
+    while exit == False:
+        todo = input("Auswählen: /game, /resetdb, /stats or /exit: ")
+        if todo == "/game":
+            game()
+            databaseshit(win)
+        elif todo == "/resetdb":
+            cleardb("testwin")
+        elif todo == "/stats":
+            print("Gesamtstats der Sitzung: " + str(stats), "Win: " + str(win), "Menschanalyse: " + str(menschanalyse))
+        elif todo == "/exit":
+            exit = True
 
 
 if __name__ == "__main__":
-    game()
-    databaseshit()
-    app.run()
+    menu()
