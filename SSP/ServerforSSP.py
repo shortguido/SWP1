@@ -64,4 +64,3 @@ class ApiClass(Resource):
         return data
 
 api.add_resource(ApiClass, '/')
-app.run(debug="True")
