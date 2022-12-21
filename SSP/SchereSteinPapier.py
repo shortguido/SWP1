@@ -1,6 +1,6 @@
 import random
 
-from ServerforSSP import databaseshit, cleardb
+from ServerforSSP import databaseshit, cleardb, app, getalldata, ApiClass, api
 
 available = ["Stein","Schere","Papier","Echse","Spock"]
 stats = {"Stein": 0, "Papier": 0, "Schere": 0, "Echse": 0, "Spock": 0}
@@ -74,17 +74,20 @@ def menu():
     print("Menu:")
     databaseshit(win)
     while exit == False:
-        todo = input("Auswählen: /game, /resetdb, /stats or /exit: ")
+        todo = input("Auswählen: /game, /resetdb, /stats oder /exit: ")
         if todo == "/game":
             game()
             databaseshit(win)
         elif todo == "/resetdb":
             cleardb("testwin")
         elif todo == "/stats":
+            print()
             print("Gesamtstats der Sitzung: " + str(stats), "Win: " + str(win), "Menschanalyse: " + str(menschanalyse))
+            print("All-time Wins: " + str(getalldata()))
+            print()
         elif todo == "/exit":
             exit = True
-
+    app.run()
 
 if __name__ == "__main__":
     menu()

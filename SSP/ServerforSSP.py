@@ -9,7 +9,6 @@ db = mysql.connector.connect(
         password="",
         database="statistikaustria"
     )
-#First db INSERT
 mycurs = db.cursor()
 
 def databaseshit(win):
@@ -18,7 +17,7 @@ def databaseshit(win):
     wm = getdatafromrow()[1] + int(values[1])
     wc = getdatafromrow()[0] + int(values[5])
     draw = getdatafromrow()[2] + int(values[9])
-    sql = f"UPDATE testwin SET Mensch = {wm}"
+    sql = "UPDATE testwin SET Mensch = %s" % (wm)
     sql2 = "UPDATE testwin SET PC = %s" % (wc)
     sql3 = "UPDATE testwin SET U = %s" % (draw)
     mycurs.execute(sql)
@@ -37,6 +36,7 @@ def getdatafromrow():
     mycurs.execute('SELECT U FROM testwin;')
     draw = [int(record[0]) for record in mycurs.fetchall()]
     draw = draw[0]
+    db.commit()
     #print(str(wm) + str(wc) + str(draw))
     return wm, wc, draw
 
