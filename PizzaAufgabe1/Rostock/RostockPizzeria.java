@@ -2,9 +2,10 @@ package Rostock;
 import Pizza.Pizza;
 import Pizza.Pizzeria;
 
-// Berliner Pizzeria
+
 public class RostockPizzeria extends Pizzeria {
-// Erstellung der speziellen Berliner Pizza
+
+	@Override
 	public Pizza erstellePizza(String typ) {
 		if (typ.equals("Salami")) {
 			return new RostockSalamiPizza();
