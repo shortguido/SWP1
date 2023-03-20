@@ -40,6 +40,7 @@ class DoublyLinkedList:
             current = current.prev
         print()
 
+
 class Node:
     def __init__(self, value):
         self.value = value
