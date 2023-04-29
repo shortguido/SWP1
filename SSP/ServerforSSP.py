@@ -2,24 +2,23 @@ from flask_restful import Api, Resource
 import mysql.connector
 from flask import Flask
 
-
 db = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="statistikaustria"
-    )
+    host="localhost",
+    user="root",
+    password="",
+    database="statistikaustria"
+)
 mycurs = db.cursor()
 
-def databaseshit(win):
 
+def databaseshit(win):
     values = ','.join("'" + str(x).replace('/', '_') + "'" for x in win.values())
     wm = getdatafromrow()[1] + int(values[1])
     wc = getdatafromrow()[0] + int(values[5])
     draw = getdatafromrow()[2] + int(values[9])
-    sql = "UPDATE testwin SET Mensch = %s" % (wm)
-    sql2 = "UPDATE testwin SET PC = %s" % (wc)
-    sql3 = "UPDATE testwin SET U = %s" % (draw)
+    sql = "UPDATE testwin SET Mensch = %s" % wm
+    sql2 = "UPDATE testwin SET PC = %s" % wc
+    sql3 = "UPDATE testwin SET U = %s" % draw
     mycurs.execute(sql)
     mycurs.execute(sql2)
     mycurs.execute(sql3)
@@ -37,7 +36,7 @@ def getdatafromrow():
     draw = [int(record[0]) for record in mycurs.fetchall()]
     draw = draw[0]
     db.commit()
-    #print(str(wm) + str(wc) + str(draw))
+    # print(str(wm) + str(wc) + str(draw))
     return wm, wc, draw
 
 
@@ -48,6 +47,7 @@ def getalldata():
     dict = {"Mensch": getdatafromrow()[1], "PC": getdatafromrow()[0], "Draw": getdatafromrow()[2]}
     return dict
 
+
 def cleardb(dict1):
     sqlclear = "DELETE from %s;" % (dict1)
     mycurs.execute(sqlclear)
@@ -55,12 +55,15 @@ def cleardb(dict1):
     mycurs.execute(sqlfirst)
     db.commit()
 
+
 app = Flask(__name__)
 api = Api(app)
+
 
 class ApiClass(Resource):
     def get(self):
         data = getalldata()
         return data
+
 
 api.add_resource(ApiClass, '/')

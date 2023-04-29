@@ -32,6 +32,16 @@ class LinkedList:
             current = current.next
         print()
 
+    def remove(self, value):
+        current = self.head
+        if current.value == value:
+            self.head = current.next
+            return
+        while current.next is not None and current.next.value is not value:
+            current = current.next
+        if current.next is not None:
+            current.next = current.next.next
+
 
 class Node:  # eigene Klasse die jedes Element der verketteten Liste darstellt
     def __init__(self, value):  # speichert value als instanzvariable
@@ -40,11 +50,13 @@ class Node:  # eigene Klasse die jedes Element der verketteten Liste darstellt
 
 
 def decorator(func):
-    def wrapper(*args,**kwargs):
+    def wrapper(*args, **kwargs):
         print(f"Folgende funktion {func} zweimal ausgeführt:")
         func(*args, **kwargs)
         func(*args, **kwargs)
+
     return wrapper
+
 
 @decorator
 def hallo():
@@ -52,10 +64,13 @@ def hallo():
 
 
 if __name__ == '__main__':
-    hallo()
-    # linked_list = LinkedList()
-    # for i in range(5):
-    #    linked_list.append(random.randint(1, 100))
 
-    # linked_list.display()
-    # print("Länge der Datenstruktur:", linked_list.length())
+    hallo()
+    linked_list = LinkedList()
+    for i in range(5):
+        linked_list.append(random.randint(1, 100))
+    linked_list.append(88)
+    linked_list.display()
+    linked_list.remove(88)
+    linked_list.display()
+    print("Länge der Datenstruktur:", linked_list.length())

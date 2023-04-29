@@ -2,7 +2,7 @@ import random
 
 from ServerforSSP import databaseshit, cleardb, app, getalldata, ApiClass, api
 
-available = ["Stein","Schere","Papier","Echse","Spock"]
+available = ["Stein", "Schere", "Papier", "Echse", "Spock"]
 stats = {"Stein": 0, "Papier": 0, "Schere": 0, "Echse": 0, "Spock": 0}
 menschanalyse = {"Stein": 0, "Papier": 0, "Schere": 0, "Echse": 0, "Spock": 0}
 win = {"PC": 0, "Mensch": 0, "U": 0}
@@ -11,7 +11,7 @@ eingabe = None
 
 def destroy(e):
     if e == "Schere":
-        return "Papier","Echse"
+        return "Papier", "Echse"
     elif e == "Papier":
         return "Stein", "Spock"
     elif e == "Stein":
@@ -21,15 +21,16 @@ def destroy(e):
     elif e == "Spock":
         return "Stein", "Schere"
 
+
 def game():
     useitdaddy = False
     hard = 0
     newround = True
-    while(newround):
+    while (newround):
         eingabe = str(input("Schere, Stein, Papier, Echse oder Spock? "))
         menschanalyse[eingabe] += 1
         pc = random.choice(available)
-        zufall = random.randint(0,1)
+        zufall = random.randint(0, 1)
         if (hard >= 3):
             if (str(input("Schwereren Modus spielen? [j/n] ")) == "j"):
                 maxmensch = max(menschanalyse, key=menschanalyse.get)
@@ -67,7 +68,6 @@ def game():
             menu()
 
 
-
 def menu():
     exit = False
     print()
@@ -88,6 +88,7 @@ def menu():
         elif todo == "/exit":
             exit = True
     app.run()
+
 
 if __name__ == "__main__":
     menu()
